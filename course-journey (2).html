@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Datamites - Your Data Science Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(45deg, #0a0e27, #1a1f3a, #2a1f3f, #1a2f4f);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Particle System */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s, visibility 0.8s;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-container {
+            position: relative;
+        }
+
+        .loader {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 8px solid rgba(255, 255, 255, 0.1);
+            border-top-color: white;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            position: relative;
+        }
+
+        .loader::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border-radius: 50%;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top-color: rgba(255, 255, 255, 0.6);
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse;
+        }
+
+        .loader::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            right: 30px;
+            bottom: 30px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: rgba(255, 255, 255, 0.3);
+            animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 40px;
+            color: white;
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.98); }
+        }
+
+        .loading-percentage {
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 2em;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Container */
+        .main-wrapper {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            animation: fadeInContent 1s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeInContent {
+            to { opacity: 1; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+                        0 0 0 1px rgba(255, 255, 255, 0.15),
+                        inset 0 0 50px rgba(255, 255, 255, 0.02);
+            max-width: 1100px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: transform 0.3s ease;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+            color: white;
+            padding: 70px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(40px, 40px) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 4em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+            animation: titleFloat 3s ease-in-out infinite;
+            background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header p {
+            font-size: 1.5em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 50px 40px;
+            color: white;
+        }
+
+        .section {
+            display: none;
+            animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .duration-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6); }
+        }
+
+        .phase-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .phase-card:hover {
+            transform: translateX(10px) scale(1.02);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .phase-card h3 {
+            color: #a5b4fc;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .phase-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .phase-card li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.05em;
+        }
+
+        .phase-card li:before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .project-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .project-box:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5));
+        }
+
+        .project-box h4 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-box p {
+            position: relative;
+            z-index: 1;
+            font-size: 1.1em;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 12px;
+            color: #fff;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 180px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 12px;
+            font-size: 1.05em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, rgba(108, 117, 125, 0.8), rgba(90, 98, 104, 0.8));
+        }
+
+        button.secondary:hover {
+            box-shadow: 0 10px 30px rgba(108, 117, 125, 0.5);
+        }
+
+        button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.1);
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 50px;
+            margin: 40px 0;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea, #764ba2, #f093fb);
+            border-radius: 10px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 4px solid rgba(10, 14, 39, 0.8);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            animation: pulse-ring 2s ease-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.8); }
+            100% { box-shadow: 0 0 0 15px rgba(102, 126, 234, 0); }
+        }
+
+        .timeline-item h4 {
+            color: #a5b4fc;
+            font-size: 1.4em;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.05em;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Floating Emojis */
+        .floating-emoji {
+            position: fixed;
+            font-size: 3em;
+            animation: float-emoji 4s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        @keyframes float-emoji {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { padding: 40px 20px; }
+            .header h1 { font-size: 2.2em; }
+            .header p { font-size: 1.1em; }
+            h2 { font-size: 1.8em; }
+            .content { padding: 25px 15px; }
+            
+            button { 
+                min-width: 100%; 
+                padding: 14px 25px;
+                font-size: 0.95em;
+                margin-bottom: 0;
+            }
+            
+            .button-group {
+                gap: 12px;
+                margin-top: 25px;
+            }
+            
+            .project-grid { 
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .project-box {
+                padding: 25px;
+            }
+            
+            .phase-card {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .stat-number {
+                font-size: 2.5em;
+            }
+            
+            .stats {
+                gap: 20px;
+                margin: 30px 0;
+            }
+            
+            .duration-badge {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            
+            .timeline {
+                padding-left: 35px;
+            }
+            
+            .timeline-item {
+                margin-bottom: 30px;
+            }
+            
+            .highlight {
+                padding: 15px;
+                margin: 20px 0;
+                font-size: 0.95em;
+            }
+            
+            p {
+                font-size: 1em !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+
+    <!-- Particles -->
+    <div id="particles"></div>
+
+    <!-- Floating Emojis -->
+    <div class="floating-emoji" style="top: 10%; left: 10%;">🚀</div>
+    <div class="floating-emoji" style="top: 20%; right: 15%; animation-delay: 1s;">💡</div>
+    <div class="floating-emoji" style="bottom: 15%; left: 20%; animation-delay: 2s;">🎯</div>
+    <div class="floating-emoji" style="bottom: 25%; right: 10%; animation-delay: 1.5s;">⭐</div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="loader"></div>
+        </div>
+        <div class="loading-text">DATAMITES</div>
+        <div class="loading-percentage">0%</div>
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>✨ Datamites</h1>
+                <p>Your Data Science Journey Begins Here</p>
+            </div>
+
+            <div class="content">
+                <!-- Section 1: Overview -->
+                <div class="section active" id="section-1">
+                    <h2>🚀 Welcome to Your Transformation!</h2>
+                    <div class="duration-badge">⏱️ Total Duration: 8 Months</div>
+                    
+                    <p style="font-size: 1.15em; line-height: 1.9; margin: 25px 0; color: rgba(255, 255, 255, 0.9);">
+                        Embark on an incredible journey divided into <strong style="color: #a5b4fc;">2 transformative phases</strong> that will take you from absolute beginner to job-ready data scientist! 🎓
+                    </p>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">20</div>
+                            <div class="stat-label">Hours/Week Training</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12+</div>
+                            <div class="stat-label">Capstone Projects</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2500+</div>
+                            <div class="stat-label">Hiring Partners</div>
+                        </div>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>💡 Zero Experience? No Problem!</strong><br>
+                        We start from the absolute basics and take you all the way to advanced, industry-ready skills with the most trending tools and technologies!
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(2)"><span>🎯 View Phase 1</span></button>
+                        <button onclick="showSection(4)"><span>💼 View Phase 2</span></button>
+                        <button class="secondary" onclick="showSection(3)"><span>📚 See Syllabus</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 2: Phase 1 -->
+                <div class="section" id="section-2">
+                    <h2>📚 Phase 1: Foundation Building</h2>
+                    <div class="duration-badge">⏱️ Duration: 4 Months</div>
+
+                    <div class="phase-card">
+                        <h3>🎯 Intensive Training Model</h3>
+                        <ul>
+                            <li><strong>8 Hours:</strong> Deep-dive Theory Sessions with Expert Instructors</li>
+                            <li><strong>12 Hours:</strong> Hands-on Practical Labs & Real Projects</li>
+                            <li><strong>20 Hours/Week:</strong> Total Immersive Learning Experience</li>
+                        </ul>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3>✨ What Makes This Special</h3>
+                        <ul>
+                            <li>Start from ground zero - No prerequisites needed!</li>
+                            <li>Master cutting-edge tools & trending technologies</li>
+                            <li>Learn industry best practices from day one</li>
+                            <li>Build confidence with guided assignments</li>
+                            <li>Get mentored by industry professionals</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>🏆 IABAC Certified Excellence</strong><br>
+                        Our curriculum follows IABAC (International Association of Business Analytics Certifications) standards - recognized globally by top companies!
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(3)"><span>📥 Download Syllabus</span></button>
+                        <button onclick="showSection(4)"><span>➡️ Next: Phase 2</span></button>
+                        <button class="secondary" onclick="showSection(1)"><span>⬅️ Back</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 3: Syllabus -->
+                <div class="section" id="section-3">
+                    <h2>📖 Comprehensive Syllabus</h2>
+                    
+                    <p style="font-size: 1.15em; margin: 25px 0; color: rgba(255, 255, 255, 0.9);">
+                        Amazing choice! 🎉 Our syllabus is meticulously designed under <strong style="color: #a5b4fc;">IABAC Guidelines</strong> to ensure you're learning exactly what the industry demands.
+                    </p>
+
+                    <div class="phase-card">
+                        <h3>🌟 Course Highlights</h3>
+                        <ul>
+                            <li>Absolute beginner-friendly - Start from zero!</li>
+                            <li>Progressive learning path to advanced mastery</li>
+                            <li>Latest tools: Python, R, SQL, Machine Learning, Deep Learning</li>
+                            <li>Real-world datasets and business problems</li>
+                            <li>Weekly assignments to reinforce learning</li>
+                            <li>Capstone projects that wow employers</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-grid">
+                        <div class="project-box">
+                            <h4>🐍</h4>
+                            <p>Python & Libraries</p>
+                        </div>
+                        <div class="project-box">
+                            <h4>🤖</h4>
+                            <p>Machine Learning</p>
+                        </div>
+                        <div class="project-box">
+                            <h4>📊</h4>
+                            <p>Data Visualization</p>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="triggerConfetti(); alert('📥 Syllabus PDF download starting...')"><span>📥 Download Full Syllabus</span></button>
+                        <button onclick="showSection(4)"><span>➡️ Continue Journey</span></button>
+                        <button class="secondary" onclick="showSection(1)"><span>⬅️ Back to Overview</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 4: Phase 2 Intro -->
+                <div class="section" id="section-4">
+                    <h2>💼 Phase 2: Professional Portfolio Building</h2>
+                    <div class="duration-badge">⏱️ Duration: Months 5-8</div>
+
+                    <p style="font-size: 1.15em; line-height: 1.9; margin: 25px 0; color: rgba(255, 255, 255, 0.9);">
+                        This is where magic happens! 🎨 Build your <strong style="color: #a5b4fc;">"Creativity Book"</strong> - a stunning portfolio that proves your skills to every employer.
+                    </p>
+
+                    <div class="highlight">
+                        <strong>🎯 Why Your Portfolio is Your Superpower</strong><br>
+                        In interviews, they don't just ask questions - they want to SEE your work. Your project portfolio becomes your proof, your credibility, your competitive edge!
+                    </div>
+
+                    <div class="project-grid">
+                        <div class="project-box">
+                            <h4>12+</h4>
+                            <p>Capstone Projects</p>
+                        </div>
+                        <div class="project-box">
+                            <h4>2</h4>
+                            <p>Live Industry Projects</p>
+                        </div>
+                        <div class="project-box">
+                            <h4>8</h4>
+                            <p>Months Internship</p>
+                        </div>
+                    </div>
+
+                    <div class="phase-card">
+                        <h3>💡 Portfolio Impact Example</h3>
+                        <ul>
+                            <li><strong>Project 1:</strong> Uses 4 tools + unique problem-solving strategy</li>
+                            <li><strong>Project 2:</strong> Uses 4 NEW tools + different analytical approach</li>
+                            <li><strong>Project 3:</strong> Uses another 4 tools + innovative solution</li>
+                        </ul>
+                        <p style="margin-top: 20px; font-style: italic; color: #a5b4fc; font-size: 1.1em;">
+                            💬 Interviewer's reaction: "Wow! This person knows 12+ tools and can tackle any challenge!"
+                        </p>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(5)"><span>🤝 Rubixe Partnership</span></button>
+                        <button onclick="showSection(6)"><span>🎓 Why Internship?</span></button>
+                        <button class="secondary" onclick="showSection(1)"><span>⬅️ Back</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 5: Rubixe -->
+                <div class="section" id="section-5">
+                    <h2>🤝 Rubixe AI Company Partnership</h2>
+
+                    <p style="font-size: 1.15em; line-height: 1.9; margin: 25px 0; color: rgba(255, 255, 255, 0.9);">
+                        We've partnered with <strong style="color: #a5b4fc;">Rubixe AI Company</strong> to give you genuine industry experience that employers recognize and respect! 🏢
+                    </p>
+
+                    <div class="phase-card">
+                        <h3>🎁 What You Get from Rubixe</h3>
+                        <ul>
+                            <li>Access to 12+ real-world capstone projects</li>
+                            <li>2 live projects with actual business impact</li>
+                            <li>Official 8-month internship letter</li>
+                            <li>Real company name on your resume</li>
+                            <li>Industry-standard project documentation</li>
+                            <li>Professional work experience certificate</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-grid">
+                        <div class="project-box">
+                            <h4>✓</h4>
+                            <p>Real Projects</p>
+                        </div>
+                        <div class="project-box">
+                            <h4>✓</h4>
+                            <p>Industry Standards</p>
+                        </div>
+                        <div class="project-box">
+                            <h4>✓</h4>
+                            <p>Official Certificate</p>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(6)"><span>❓ Why Internship Letter?</span></button>
+                        <button onclick="showSection(7)"><span>➡️ Placement Support</span></button>
+                        <button class="secondary" onclick="showSection(4)"><span>⬅️ Back</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 6: Why Internship -->
+                <div class="section" id="section-6">
+                    <h2>🎓 The Internship Letter Advantage</h2>
+
+                    <div class="highlight" style="background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(233, 30, 99, 0.2)); border-color: #f44336;">
+                        <strong>⚠️ Every Fresh Graduate's Nightmare:</strong><br><br>
+                        <span style="font-size: 1.2em;">"You need experience to get this job."</span><br><br>
+                        But how do you get experience when you're just starting? 🤔
+                    </div>
+
+                    <div class="phase-card">
+                        <h3>✨ The Game-Changing Solution</h3>
+                        <p style="margin-bottom: 20px; font-size: 1.1em; color: rgba(255, 255, 255, 0.9);">
+                            An <strong style="color: #a5b4fc;">Internship Letter</strong> completely transforms how interviewers see you!
+                        </p>
+                        <p style="font-size: 1.15em; font-weight: bold; color: #f093fb; line-height: 1.8;">
+                            🎯 Before: "Just another fresher with no experience"<br>
+                            ✨ After: "A candidate who's already worked in the industry!"
+                        </p>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">✓</div>
+                            <div class="stat-label">Real Company<br>on Resume</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">✓</div>
+                            <div class="stat-label">Instant<br>Credibility</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">✓</div>
+                            <div class="stat-label">Competitive<br>Advantage</div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(7)"><span>🎯 See Placement Support</span></button>
+                        <button class="secondary" onclick="showSection(5)"><span>⬅️ Back to Rubixe</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 7: Placements -->
+                <div class="section" id="section-7">
+                    <h2>💼 Comprehensive Placement Support</h2>
+
+                    <p style="font-size: 1.15em; line-height: 1.9; margin: 25px 0; color: rgba(255, 255, 255, 0.9);">
+                        Starting <strong style="color: #a5b4fc;">Month 5</strong>, our dedicated Placement Assessment Team (PAT) joins your journey to ensure you land your dream job! 🚀
+                    </p>
+
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <h4>📅 Month 5: PAT Activation</h4>
+                            <p>Your personal placement team begins working exclusively on your success</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4>📝 Resume Building</h4>
+                            <p>Professional, ATS-optimized resume that gets you interviews</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4>💼 LinkedIn Optimization</h4>
+                            <p>Stand out to recruiters with a compelling, keyword-rich profile</p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4>🎤 Mock Interviews</h4>
+                            <p>Practice with industry experts until you're interview-ready</p>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(8)"><span>🎉 See the BIG Reveal!</span></button>
+                        <button class="secondary" onclick="showSection(6)"><span>⬅️ Back</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 8: Hiring Partners -->
+                <div class="section" id="section-8">
+                    <h2>🎉 The WOW Moment!</h2>
+
+                    <div class="project-box" style="margin: 40px 0; padding: 50px;">
+                        <h4 style="font-size: 5em; animation: pulse 2s ease-in-out infinite;">2500+</h4>
+                        <p style="font-size: 1.8em; margin-top: 20px;">Hiring Partners Across India!</p>
+                    </div>
+
+                    <p style="font-size: 1.5em; text-align: center; margin: 40px 0; font-weight: bold; color: #f093fb;">
+                        WOW! That's MASSIVE! 🚀✨
+                    </p>
+
+                    <div class="phase-card">
+                        <h3>🎯 Months 5-6: Your Active Job Search</h3>
+                        <ul>
+                            <li>PAT team completes all preparation tasks</li>
+                            <li>You build 3-4 impressive projects simultaneously</li>
+                            <li>Your resume reaches 2500+ companies</li>
+                            <li>Interviews are scheduled and coordinated for you</li>
+                            <li>Continuous support until you're placed</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight">
+                        <strong>🎓 Your Success Formula:</strong><br><br>
+                        <span style="font-size: 1.15em;">
+                        12+ Projects + Optimized Resume + Internship Letter + 2500+ Companies = 
+                        <strong style="color: #a5b4fc;">UNLIMITED OPPORTUNITIES!</strong>
+                        </span>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(9); triggerConfetti()"><span>🎯 Interview Opportunities</span></button>
+                        <button class="secondary" onclick="showSection(1)"><span>🏠 Back to Start</span></button>
+                    </div>
+                </div>
+
+                <!-- Section 9: Interviews -->
+                <div class="section" id="section-9">
+                    <h2>🎯 Your Interview Journey</h2>
+
+                    <p style="font-size: 1.15em; line-height: 1.9; margin: 25px 0; color: rgba(255, 255, 255, 0.9);">
+                        With <strong style="color: #a5b4fc;">2500+ hiring partners</strong> and our comprehensive support system, you'll receive multiple interview opportunities tailored to your profile! 🎉
+                    </p>
+
+                    <div class="phase-card">
+                        <h3>📊 What Determines Your Success?</h3>
+                        <ul>
+                            <li>Quality and diversity of your 12+ project portfolio</li>
+                            <li>Your performance in mock interview sessions</li>
+                            <li>Strength of your resume and LinkedIn profile</li>
+                            <li>Current market demand in your preferred domain</li>
+                            <li>Your availability and job preferences</li>
+                            <li>Networking during the program</li>
+                        </ul>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Interview<br>Opportunities</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Dedicated<br>Support</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2500+</div>
+                            <div class="stat-label">Partner<br>Companies</div>
+                        </div>
+                    </div>
+
+                    <div class="highlight" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(67, 160, 71, 0.2)); border-color: #4caf50;">
+                        <strong>🎓 Your 8-Month Transformation is Complete!</strong><br><br>
+                        <span style="font-size: 1.1em;">
+                        From absolute beginner → Industry-ready Data Scientist<br>
+                        From zero projects → Portfolio of 12+ impressive projects<br>
+                        From no experience → 8-month internship letter<br>
+                        From job seeker → Interview-ready professional!
+                        </span>
+                    </div>
+
+                    <div class="button-group">
+                        <button onclick="showSection(1); triggerConfetti()"><span>🔄 Restart Journey</span></button>
+                        <button onclick="triggerConfetti(); alert('🎉 Enrollment process would begin here! Welcome to Datamites!')"><span>✨ Enroll Now!</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading Screen Animation
+        let loadingScreen = document.getElementById('loading-screen');
+        let percentageEl = document.querySelector('.loading-percentage');
+        let barFill = document.querySelector('.loading-bar-fill');
+        let percentage = 0;
+
+        let loadingInterval = setInterval(() => {
+            percentage += Math.random() * 15;
+            if (percentage >= 100) {
+                percentage = 100;
+                clearInterval(loadingInterval);
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                }, 500);
+            }
+            percentageEl.textContent = Math.floor(percentage) + '%';
+            barFill.style.width = percentage + '%';
+        }, 200);
+
+        // Create Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Section Navigation
+        function showSection(sectionNumber) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            const targetSection = document.getElementById(`section-${sectionNumber}`);
+            targetSection.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Confetti Effect
+        function triggerConfetti() {
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = -20 + 'px';
+                    confetti.style.background = ['#667eea', '#764ba2', '#f093fb', '#ffc107', '#4caf50'][Math.floor(Math.random() * 5)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Easter Egg: Click on header multiple times
+        let clickCount = 0;
+        document.querySelector('.header h1').addEventListener('click', function() {
+            clickCount++;
+            if (clickCount === 5) {
+                triggerConfetti();
+                alert('🎉 You found the secret! You\'re going to be an amazing Data Scientist! 🚀');
+                clickCount = 0;
+            }
+        });
+    </script>
+</body>
+</html>
